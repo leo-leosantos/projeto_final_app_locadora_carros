@@ -36,7 +36,7 @@
                     class="form-control"
                     id="inputId"
                     aria-describedby="nomeHelp"
-                    placeholder="Informe o nome da Marca da Marca do Carro"
+                    placeholder="Informe o nome da Marca da Marca"
                   />
                 </input-container-component>
               </div>
