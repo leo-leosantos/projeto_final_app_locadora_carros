@@ -73,6 +73,11 @@
       </div>
     </div>
     <modal-component id="modalMarca" titulo="Adicionar Marca">
+        <template v-slot:alertas >
+            <alert-component tipo="success" :detalhes="transaoDetalhes" titulo="Marca cadastrada com sucesso"  v-if="transacaoStatus == 'adicionado'"> </alert-component>
+            <alert-component tipo="danger"  :detalhes="transaoDetalhes" titulo="Error ao tentar cadastrar a marca" v-if="transacaoStatus == 'error'"> </alert-component>
+
+        </template>
         <template v-slot:conteudo>
             <div class="form-grup">
                 <input-container-component
@@ -89,7 +94,6 @@
                             placeholder="Informe o nome da Marca da Marcas do carro" v-model="nomeMarca"
                         />
                 </input-container-component>
-                {{ nomeMarca }}
             </div>
             <div class="form-grup">
                 <input-container-component
@@ -106,7 +110,6 @@
                             placeholder="selecione uma imagem" @change="carregarImagem($event)"
                         />
                 </input-container-component>
-                {{ arquivoImagem }}
             </div>
         </template>
         <template v-slot:rodape>
@@ -123,7 +126,9 @@ export default {
         return {
             urlBase: 'http://localhost/pf_app_locadora_carros/public/api/v1/marca',
             nomeMarca: '',
-            arquivoImagem: []
+            arquivoImagem: [],
+            transacaoStatus: '',
+            transaoDetalhes: []
         }
     },
     computed:{
@@ -160,9 +165,14 @@ export default {
 
             axios.post(this.urlBase, formData , config)
             .then(response => {
+                this.transacaoStatus = 'adicionado'
+                this.transaoDetalhes = response
+
                 console.log(response)
-            }).catch(error => {
-                console.log(error)
+            }).catch(errors => {
+                this.transacaoStatus = 'error'
+                this.transaoDetalhes = errors.response
+                //console.log(errors.response.data.message)
             })
         }
     }
