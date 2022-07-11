@@ -72,7 +72,46 @@
         <!--Fim do card de listagem de marcas-->
       </div>
     </div>
-    <modal-component id="modalMarca" titulo="Adicionar Marca"></modal-component>>
+    <modal-component id="modalMarca" titulo="Adicionar Marca">
+        <template v-slot:conteudo>
+            <div class="form-grup">
+                <input-container-component
+                        titulo="Nome da Marca"
+                        id="novoNome"
+                        id-help="novoNomeHelp"
+                        texto-ajuda="Opcional. Informe o nome da marca"
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="inputId"
+                            aria-describedby="novoNomeHelp"
+                            placeholder="Informe o nome da Marca da Marcas do carro"
+                        />
+                </input-container-component>
+            </div>
+            <div class="form-grup">
+                <input-container-component
+                        titulo="Imagem"
+                        id="novoImagem"
+                        id-help="novoImagemHelp"
+                        texto-ajuda="Opcional. selecione uma imagem no formado png"
+                        >
+                        <input
+                            type="file"
+                            class="form-control-file"
+                            id="inputId"
+                            aria-describedby="novoImagem"
+                            placeholder="selecione uma imagem"
+                        />
+                </input-container-component>
+            </div>
+        </template>
+        <template v-slot:rodape>
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary">Salvar</button>
+        </template>>
+    </modal-component>
   </div>
 </template>
 
