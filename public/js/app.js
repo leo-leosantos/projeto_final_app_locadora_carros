@@ -2375,6 +2375,16 @@ __webpack_require__.r(__webpack_exports__);
       arquivoImagem: []
     };
   },
+  computed: {
+    token: function token() {
+      var token = document.cookie.split(';').find(function (indice) {
+        return indice.includes('token='); // console.log(indice, indice.includes('token='))
+      });
+      token = token.split('=')[1];
+      token = 'Bearer ' + token;
+      return token;
+    }
+  },
   methods: {
     carregarImagem: function carregarImagem(e) {
       this.arquivoImagem = e.target.files;
@@ -2387,7 +2397,8 @@ __webpack_require__.r(__webpack_exports__);
       var config = {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'Authorization': this.token
         }
       };
       axios.post(this.urlBase, formData, config).then(function (response) {

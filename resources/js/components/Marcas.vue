@@ -126,6 +126,19 @@ export default {
             arquivoImagem: []
         }
     },
+    computed:{
+        token(){
+            let token = document.cookie.split(';').find(indice => {
+
+                return indice.includes('token=')
+                // console.log(indice, indice.includes('token='))
+            })
+
+            token = token.split('=')[1]
+            token = 'Bearer ' + token;
+            return token;
+        }
+    },
     methods: {
         carregarImagem(e){
             this.arquivoImagem = e.target.files
@@ -140,7 +153,8 @@ export default {
             let config ={
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Accept':       'application/json'
+                    'Accept':       'application/json',
+                    'Authorization': this.token,
                 }
             }
 
