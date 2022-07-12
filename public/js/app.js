@@ -2081,7 +2081,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['tipo', 'titulo', 'detalhes'],
   computed: {
@@ -2409,6 +2408,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2416,7 +2417,8 @@ __webpack_require__.r(__webpack_exports__);
       nomeMarca: '',
       arquivoImagem: [],
       transacaoStatus: '',
-      transaoDetalhes: []
+      transaoDetalhes: {},
+      marcas: []
     };
   },
   computed: {
@@ -2430,11 +2432,27 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    carregarLista: function carregarLista() {
+      var _this = this;
+
+      //  let config = {
+      //     headers: {
+      //         'Accept':       'application/json',
+      //         'Authorization': this.token,
+      //     }
+      // }
+      axios.get(this.urlBase).then(function (response) {
+        _this.marcas = response.data;
+        console.log(_this.marcas);
+      })["catch"](function (errors) {
+        console.error(errors);
+      });
+    },
     carregarImagem: function carregarImagem(e) {
       this.arquivoImagem = e.target.files;
     },
     salvar: function salvar() {
-      var _this = this;
+      var _this2 = this;
 
       // console.log(this.nomeMarca, this.arquivoImagem[0])
       var formData = new FormData();
@@ -2448,14 +2466,22 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
       axios.post(this.urlBase, formData, config).then(function (response) {
-        _this.transacaoStatus = 'adicionado';
-        _this.transaoDetalhes = response;
+        _this2.transacaoStatus = 'adicionado';
+        _this2.transaoDetalhes = {
+          mensagem: 'Id do Registro: ' + response.data.id
+        };
         console.log(response);
       })["catch"](function (errors) {
-        _this.transacaoStatus = 'error';
-        _this.transaoDetalhes = errors.response; //console.log(errors.response.data.message)
+        _this2.transacaoStatus = 'error';
+        _this2.transaoDetalhes = {
+          mensagem: errors.response.data.message,
+          dados: errors.response.data.errors
+        }; //console.log(errors.response.data.message)
       });
     }
+  },
+  mounted: function mounted() {
+    this.carregarLista();
   }
 });
 
@@ -38549,18 +38575,12 @@ var render = function () {
     _vm._v("\n    " + _vm._s(_vm.titulo) + "\n    "),
     _c("hr"),
     _vm._v(" "),
-    _vm.detalhes.data.message
-      ? _c("span", [_vm._v(_vm._s(_vm.detalhes.data.message))])
-      : _vm._e(),
+    _c("p", [_vm._v(_vm._s(_vm.detalhes.mensagem))]),
     _vm._v(" "),
-    _vm.detalhes.data.id
-      ? _c("span", [_vm._v(_vm._s("Id do registro: " + _vm.detalhes.data.id))])
-      : _vm._e(),
-    _vm._v("\n\n    " + _vm._s(_vm.detalhes.data.message) + "\n    "),
-    _vm.detalhes.data.errors
+    _vm.detalhes.dados
       ? _c(
           "ul",
-          _vm._l(_vm.detalhes.data.errors, function (e, key) {
+          _vm._l(_vm.detalhes.dados, function (e, key) {
             return _c("li", { key: key }, [
               _vm._v("\n            " + _vm._s(e[0]) + "\n        "),
             ])

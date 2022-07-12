@@ -117,6 +117,8 @@
             <button type="button" class="btn btn-primary" @click="salvar()">Salvar</button>
         </template>>
     </modal-component>
+
+
   </div>
 </template>
 
@@ -128,7 +130,8 @@ export default {
             nomeMarca: '',
             arquivoImagem: [],
             transacaoStatus: '',
-            transaoDetalhes: []
+            transaoDetalhes: {},
+            marcas: []
         }
     },
     computed:{
@@ -145,6 +148,22 @@ export default {
         }
     },
     methods: {
+
+         carregarLista(){
+            //  let config = {
+            //     headers: {
+            //         'Accept':       'application/json',
+            //         'Authorization': this.token,
+            //     }
+            // }
+            axios.get(this.urlBase, ).then(response =>{
+                this.marcas = response.data
+                console.log(this.marcas)
+
+            }).catch(errors => {
+                console.error(errors)
+            })
+         },
         carregarImagem(e){
             this.arquivoImagem = e.target.files
         },
@@ -166,15 +185,23 @@ export default {
             axios.post(this.urlBase, formData , config)
             .then(response => {
                 this.transacaoStatus = 'adicionado'
-                this.transaoDetalhes = response
+                this.transaoDetalhes = {
+                    mensagem: 'Id do Registro: ' +  response.data.id
+                }
 
                 console.log(response)
             }).catch(errors => {
                 this.transacaoStatus = 'error'
-                this.transaoDetalhes = errors.response
+                this.transaoDetalhes =  {
+                    mensagem: errors.response.data.message,
+                    dados: errors.response.data.errors
+                }
                 //console.log(errors.response.data.message)
             })
         }
+    },
+    mounted(){
+        this.carregarLista();
     }
 }
 </script>
