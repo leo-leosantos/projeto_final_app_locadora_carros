@@ -58,7 +58,11 @@
 
         <card-component titulo="Relação de Marcas">
           <template v-slot:conteudo>
-            <table-component></table-component>
+            <table-component
+                :dados="marcas"
+                :titulos="['ID', 'Nome', 'Imagem', 'Criado em']"
+            >
+            </table-component>
           </template>
           <template v-slot:rodape>
             <button
@@ -150,13 +154,13 @@ export default {
     methods: {
 
          carregarLista(){
-            //  let config = {
-            //     headers: {
-            //         'Accept':       'application/json',
-            //         'Authorization': this.token,
-            //     }
-            // }
-            axios.get(this.urlBase, ).then(response =>{
+             let config = {
+                headers: {
+                    'Accept':       'application/json',
+                    'Authorization': this.token,
+                }
+            }
+            axios.get(this.urlBase,config ).then(response =>{
                 this.marcas = response.data
                 console.log(this.marcas)
 
