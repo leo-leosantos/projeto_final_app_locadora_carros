@@ -60,7 +60,12 @@
           <template v-slot:conteudo>
             <table-component
                 :dados="marcas"
-                :titulos="['ID', 'Nome', 'Imagem', 'Criado em']"
+                :titulos="{
+                    id:{titulo: 'ID', tipo: 'texto'},
+                    nome:{titulo: 'Nome', tipo: 'texto'},
+                    imagem:{titulo: 'Imagem', tipo: 'imagem'},
+                    created_at:{titulo: 'Data de Criação', tipo: 'data'}
+                }"
             >
             </table-component>
           </template>
