@@ -59,7 +59,7 @@
         <card-component titulo="Relação de Marcas">
           <template v-slot:conteudo>
             <table-component
-                :dados="marcas"
+                :dados="marcas.data"
                 :titulos="{
                     id:{titulo: 'ID', tipo: 'texto'},
                     nome:{titulo: 'Nome', tipo: 'texto'},
@@ -70,12 +70,20 @@
             </table-component>
           </template>
           <template v-slot:rodape>
-            <button
-              type="submit"
-              class="btn btn-outline-success btn-sm float-right"  data-toggle="modal" data-target="#modalMarca"
-            >
-              Adicionar
-            </button>
+            <div class="row">
+                <div class="col-10">
+                    <paginate-component>
+                            <li v-for="l, key in marcas.links" :key="key" class="page-item">
+                                <a class="page-link" href="#" v-html="l.label"></a>
+                            </li>
+                    </paginate-component>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-outline-success btn-sm float-right"  data-toggle="modal" data-target="#modalMarca">
+                        Adicionar
+                    </button>
+                </div>
+              </div>
           </template>
         </card-component>
         <!--Fim do card de listagem de marcas-->
@@ -140,7 +148,7 @@ export default {
             arquivoImagem: [],
             transacaoStatus: '',
             transaoDetalhes: {},
-            marcas: []
+            marcas: {data: []}
         }
     },
     computed:{
@@ -167,7 +175,7 @@ export default {
             }
             axios.get(this.urlBase,config ).then(response =>{
                 this.marcas = response.data
-                console.log(this.marcas)
+                console.log(this.marcas.data)
 
             }).catch(errors => {
                 console.error(errors)
