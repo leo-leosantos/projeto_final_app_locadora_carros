@@ -2,20 +2,18 @@
 <div>
   <table class="table table-hover">
         <thead>
-        <tr >
-            <th scope="col" v-for="t , key in titulos" :key="key"  >{{ t.titulo }}</th>
-            <th v-if="visualizar.visivel || atualizar || remover.visivel">Ações</th>
-
-        </tr>
+            <tr>
+                <th scope="col" v-for="t , key in titulos" :key="key"  >{{ t.titulo }}</th>
+                <th v-if="visualizar.visivel || atualizar || remover.visivel">Ações</th>
+            </tr>
         </thead>
         <tbody>
-
             <tr v-for="obj, chave in dadosFiltrados" :key="chave">
                 <td v-for="valor, chaveValor in obj" :key="chaveValor">
                     <span v-if="titulos[chaveValor].tipo == 'texto'">{{ valor }}</span>
                     <span v-if="titulos[chaveValor].tipo == 'data'">{{ '...' + valor }}</span>
                     <span v-if="titulos[chaveValor].tipo == 'imagem'">
-                        <img :src="'./storage/'+ valor" width="50" height="50">
+                        <img :src="'./storage/'+valor" width="50" height="50">
                     </span>
                 </td>
                  <td v-if="visualizar.visivel || atualizar || remover.visivel">
@@ -64,7 +62,9 @@ export default {
     props: ['dados','titulos','atualizar','visualizar','remover'],
     methods:{
             setStore(obj){
-                //this.$store.state.item = obj
+               // this.$store.state.transacao.status = ''
+               // this.$store.state.transacao.mensagem = ''
+               // this.$store.state.item = obj
                 console.log(obj)
             }
     },

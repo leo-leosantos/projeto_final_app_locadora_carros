@@ -169,8 +169,11 @@
 
            <!-- inico modal visualizao  de marca-->
       <modal-component id="modalMarcaRemover" titulo="Remover Marca">
-          <template v-slot:alertas></template>
-            <template v-slot:conteudo>
+          <template v-slot:alertas>
+                <alert-component tipo="success" titulo="transacao realizada com sucesso" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status == 'sucesso' "></alert-component>
+                <alert-component tipo="danger" titulo="Erro na transacao" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status == 'erro'" ></alert-component>
+          </template>
+            <template v-slot:conteudo v-if="$store.state.transacao.status != 'sucesso'">
                 {{ $store.state.item }}
                  <input-container-component titulo="ID">
                     <input type="text" class="form-control" :value="$store.state.item.id" disabled>
@@ -181,11 +184,13 @@
             </template>
           <template v-slot:rodape>
              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="remover()"  v-if="$store.state.transacao.status != 'sucesso'">Remover</button>
+
         </template>
       </modal-component>
         <!-- final modal remoçao de marca-->
 
-    
+
 
   </div>
 </template>
@@ -224,6 +229,43 @@ export default {
         }
     },
     methods: {
+        remover(){
+            let confirmacao = confirm ('tem certeza que deseja remover esse registro ?')
+
+            if(!confirmacao ) {
+                return false;
+            }
+
+            let url = this.urlBase + '/' + this.store.state.item.id
+
+
+
+            console.log(this.store.state.transacao)
+
+            let formData = new FormData();
+            formData.append('_method','delete')
+            let config = {
+                headers: {
+                        'Accept': 'application/json',
+                        'Authorization': this.token
+                    }
+
+            }
+           axios.post(url, formData, config)
+            .then( response => {
+
+                console.log('Registro removido com sucesso', response)
+                    this.store.state.transacao.status = 'sucesso',
+                    this.store.state.transacao.mensagem = response.data.msg
+                this.carregarLista()
+            })
+            .catch(errors =>{
+
+                    console.log('houve um erro', errors.response)
+                    this.store.state.transacao.status = 'erro',
+                    this.store.state.transacao.mensagem = errors.response.data.erro
+            })
+        },
         pesquisar(){
             //console.log(this.busca)
             let filtro = ''
