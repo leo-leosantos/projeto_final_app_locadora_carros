@@ -85,14 +85,10 @@ class MarcaController extends Controller
             return response()->json(['erro' => 'Recurso nao localizado para atualização'], 404);
         }
 
-
         if ($request->method() === 'PATCH') {
-            //return ['teste' => 'Verbo patch'];
 
             $regrasDinamincas = array();
-            //percorendo todas as regras definidas no model
             foreach ($marca->rules() as $input => $regra) {
-                //coletar apenas as regras aplicaveis aos paramentros parcias da requisiçao pacth
 
                 if (array_key_exists($input, $request->all())) {
                     $regrasDinamincas[$input] = $regra;
@@ -103,25 +99,40 @@ class MarcaController extends Controller
             $request->validate($marca->rules(), $marca->feedback());
         }
 
-        if ($request->file('imagem')) {
-            Storage::disk('public')->delete($marca->imagem);
-        }
 
-        $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens', 'public');
 
+        //preencher o objeto $marca com todos os dados do request
         $marca->fill($request->all());
-        $marca->imagem = $imagem_urn;
 
+
+        //se a imagem foi encotrada na requisição
+        if($request->file('imagem')){
+            //remove o arquivo
+            Storage::disk('public')->delete($marca->imagem);
+            $imagem = $request->file('imagem');
+
+            $imagem_urn =  $imagem->store('imagens','public');
+            $marca->imagem = $imagem_urn;
+
+        }
         $marca->save();
-
         return response()->json($marca, 200);
+
+        // $imagem = $request->file('imagem');
+        // $imagem_urn = $imagem->store('imagens', 'public');
+
+        // $marca->fill($request->all());
+        // $marca->imagem = $imagem_urn;
+
+        // $marca->save();
+
 
         // preencher o objeto $marca com os dados do request
         // $marca->update([
         //     'nome' => $request->nome,
         //     'imagem' => $imagem_urn
         // ]);
+
     }
 
 
