@@ -192,9 +192,10 @@
 
  <!-- inicio modal atualizao  de marca-->
     <modal-component id="modalMarcaAtualizar" titulo="Atualização Marca">
-        <template v-slot:alertas >
-
-        </template>
+          <template v-slot:alertas>
+                <alert-component tipo="success" titulo="transacao realizada com sucesso" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status == 'sucesso' "></alert-component>
+                <alert-component tipo="danger" titulo="Erro na transacao" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status == 'erro'" ></alert-component>
+          </template>
         <template v-slot:conteudo>
             <div class="form-group">
                 <input-container-component
@@ -260,19 +261,7 @@ export default {
                 }
         }
     },
-    computed:{
-        token(){
-            let token = document.cookie.split(';').find(indice => {
 
-                return indice.includes('token=')
-                // console.log(indice, indice.includes('token='))
-            })
-
-            token = token.split('=')[1]
-            token = 'Bearer ' + token;
-            return token;
-        }
-    },
     methods: {
         atualizar(){
 
@@ -283,25 +272,28 @@ export default {
             if(this.arquivoImagem[0]){
                 formData.append('imagem', this.arquivoImagem[0])
             }
-
-
               let  url = this.urlBase + '/' + this.$store.state.item.id
 
                 let config = {
                     headers: {
                         'Content-Type': 'multipart/form',
-                        'Accept': 'application/json',
-                        'Authorization': this.token
+
                     }
                 }
 
                 axios.post(url, formData , config)
                 .then(response => {
                     console.log('atualizado', response)
+                    this.store.state.transacao.status = 'sucesso',
+                    this.store.state.transacao.mensagem = 'Registro de marca atualizado com sucesso'
                     //limpar o campo de seleção de arquivos
                     atualizarImagem.value = ''
                     this.carregarLista()
                 }).catch(errors=>{
+                    this.store.state.transacao.status = 'erro',
+                    this.store.state.transacao.mensagem = errors.response.data.message
+                    this.store.state.transacao.dados = errors.response.data.errors
+
                     console.log(errors.response)
                 })
             console.log(this.$store.state.item)
@@ -321,14 +313,8 @@ export default {
 
             let formData = new FormData();
             formData.append('_method','delete')
-            let config = {
-                headers: {
-                        'Accept': 'application/json',
-                        'Authorization': this.token
-                    }
 
-            }
-           axios.post(url, formData, config)
+           axios.post(url, formData)
             .then( response => {
 
                 console.log('Registro removido com sucesso', response)
@@ -375,13 +361,8 @@ export default {
          carregarLista(){
             let url = this.urlBase + '?' + this.urlPaginacao + this.urlFiltro
             console.log(url)
-             let config = {
-                headers: {
-                    'Accept':       'application/json',
-                    'Authorization': this.token,
-                }
-            }
-            axios.get(url,config ).then(response =>{
+
+            axios.get(url, ).then(response =>{
                 this.marcas = response.data
                /// console.log(this.marcas.data)
 
@@ -402,8 +383,6 @@ export default {
             let config ={
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Accept':       'application/json',
-                    'Authorization': this.token,
                 }
             }
 
