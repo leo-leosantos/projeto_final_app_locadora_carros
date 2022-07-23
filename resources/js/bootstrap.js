@@ -78,7 +78,20 @@ axios.interceptors.response.use(
     },
 
     error => {
-        console.log('Error na resposta', error)
+        console.log('Error na resposta', error.response)
+
+        if(error.response.status == 401 && error.response.data.message == "Token has expired" ){
+            console.log('fazer uma nova req')
+
+            axios.post('http://localhost/pf_app_locadora_carros/public/api/refresh')
+            .then(response => {
+                    console.log('Refresh ok', response)
+                    document.cookie = 'token='+response.data.token+';SameSite=Lax'
+                    console.log('token autal', response.data.token)
+                    window.location.reload()
+            })
+
+        }
         return Promisse.reject(error)
     }
 )
